@@ -241,7 +241,6 @@ class ClaudeExporter {
   addCheckboxToMessage(message) {
     console.log('Adding checkbox to message:', message);
     
-    // 检查是否已经有checkbox
     if (message.querySelector('.claude-export-checkbox')) {
       console.log('Checkbox already exists, skipping');
       return;
@@ -250,9 +249,17 @@ class ClaudeExporter {
     // 创建checkbox容器
     const container = document.createElement('div');
     container.className = 'claude-export-checkbox-wrapper';
-    container.innerHTML = `
-      <input type="checkbox" class="claude-export-checkbox" />
-    `;
+    
+    // 创建checkbox
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'claude-export-checkbox';
+    
+    // 添加数据属性以便追踪
+    const isUserMessage = message.classList.contains('font-user-message');
+    checkbox.setAttribute('data-message-role', isUserMessage ? 'user' : 'assistant');
+    
+    container.appendChild(checkbox);
 
     try {
       // 确保消息容器有正确的定位
@@ -272,7 +279,7 @@ class ClaudeExporter {
         opacity: '1'
       });
 
-      console.log('Successfully added checkbox');
+      console.log('Successfully added checkbox with role:', checkbox.getAttribute('data-message-role'));
     } catch (error) {
       console.error('Failed to add checkbox:', error);
     }
@@ -313,20 +320,115 @@ class ClaudeExporter {
     console.log('Found checked checkboxes:', checkboxes.length);
 
     return Array.from(checkboxes).map((checkbox, index) => {
-      const messageContainer = checkbox.closest('[data-message-author-role]');
+      // 首先尝试从 checkbox 的数据属性获取角色
+      let role = checkbox.getAttribute('data-message-role');
+      console.log('Role from checkbox:', role);
+
+      // 从 checkbox 开始向上查找消息容器
+      const messageContainer = checkbox.closest('.font-user-message, .font-claude-message') || 
+                             checkbox.closest('div[data-message-author-role]');
+      
       console.log(`Processing selected message ${index + 1}:`, messageContainer);
 
-      const role = messageContainer?.getAttribute('data-message-author-role') || 'unknown';
+      if (!messageContainer) {
+        console.log('Message container not found, trying alternative method...');
+        const wrapper = checkbox.closest('.claude-export-checkbox-wrapper');
+        const parentMessage = wrapper?.parentElement;
+        console.log('Parent message:', parentMessage);
+        
+        if (parentMessage) {
+          // 获取所有文本节点，包括子元素中的文本
+          const content = this.getAllTextContent(parentMessage);
+          // 确定角色
+          role = this.determineMessageRole(parentMessage);
+          return { role, content };
+        }
+      }
+
+      // 如果还没有确定角色，尝试从消息容器确定
+      if (!role || role === 'unknown') {
+        role = this.determineMessageRole(messageContainer);
+      }
+
+      // 获取所有文本内容，保持格式
+      const content = this.getAllTextContent(messageContainer);
       console.log('Message role:', role);
-
-      const contentElement = messageContainer?.querySelector('.prose');
-      console.log('Content element:', contentElement);
-
-      const content = contentElement ? contentElement.textContent.trim() : '';
-      console.log('Message content length:', content.length);
-
+      console.log('Message content:', content ? content.substring(0, 100) + '...' : 'No content found');
+      
       return { role, content };
     });
+  }
+
+  // 新增：确定消息角色的方法
+  determineMessageRole(element) {
+    if (!element) return 'unknown';
+
+    // 检查各种可能的角色标识
+    if (element.classList.contains('font-user-message')) return 'user';
+    if (element.classList.contains('font-claude-message')) return 'assistant';
+    
+    const authorRole = element.getAttribute('data-message-author-role');
+    if (authorRole) return authorRole;
+
+    // 检查父元素
+    const parent = element.parentElement;
+    if (parent) {
+      if (parent.classList.contains('font-user-message')) return 'user';
+      if (parent.classList.contains('font-claude-message')) return 'assistant';
+    }
+
+    return 'unknown';
+  }
+
+  // 新增：获取元素的所有文本内容的方法
+  getAllTextContent(element) {
+    if (!element) return '';
+
+    let textParts = [];
+    
+    const extractText = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent;
+        if (text.trim()) textParts.push(text);
+      } 
+      else if (node.nodeType === Node.ELEMENT_NODE) {
+        // 处理代码块
+        if (node.tagName === 'PRE' || node.tagName === 'CODE') {
+          textParts.push('\n```\n' + node.textContent + '\n```\n');
+          return; // 不再处理代码块的子节点
+        }
+        
+        // 处理列表项
+        if (node.tagName === 'LI') {
+          textParts.push('\n• ');
+        }
+        
+        // 处理段落和其他块级元素
+        if (window.getComputedStyle(node).display === 'block') {
+          if (textParts.length > 0 && !textParts[textParts.length - 1].endsWith('\n')) {
+            textParts.push('\n');
+          }
+        }
+
+        // 处理子节点
+        node.childNodes.forEach(child => extractText(child));
+
+        // 块级元素后添加换行
+        if (window.getComputedStyle(node).display === 'block') {
+          textParts.push('\n');
+        }
+      }
+    };
+
+    extractText(element);
+    
+    // 合并文本并清理格式
+    return textParts
+      .join('')
+      .replace(/\n{3,}/g, '\n\n') // 将多个换行减少为最多两个
+      .replace(/\s+\n/g, '\n') // 清理行尾空白
+      .replace(/\n\s+/g, '\n') // 清理行首空白
+      .trim();
   }
 
   // 复制到剪贴板
@@ -338,7 +440,7 @@ class ClaudeExporter {
     }
 
     const text = messages
-      .map(msg => `${msg.role}: ${msg.content}`)
+      .map(msg => `${msg.role === 'assistant' ? 'Claude' : 'Human'}: ${msg.content}`)
       .join('\n\n');
 
     try {
