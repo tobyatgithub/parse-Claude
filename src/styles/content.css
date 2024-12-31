@@ -1,8 +1,7 @@
 /* 最外层消息容器的样式 */
-.group.relative.pt-3\\.5,      /* Claude消息容器 */
+.group.relative.pt-3\.5,      /* Claude消息容器 */
 .group.relative.inline-flex {   /* 用户消息容器 */
   position: relative !important;
-  margin-left: 45px !important;
 }
 
 /* Checkbox 样式 */
@@ -90,7 +89,6 @@ html div[class*="whitespace-pre-wrap"] {
 .whitespace-pre-wrap,
 .flex.flex-col.items-start.gap-4 {
   position: relative !important;
-  margin-left: 45px !important;
   padding-left: 5px !important;
 }
 

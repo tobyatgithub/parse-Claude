@@ -6,7 +6,7 @@ class ClaudeExporter {
   async init() {
     try {
       await this.waitForPageLoad();
-      await this.waitForChatInterface();
+      await this.waitForChatContent();
       this.setupControls();
       this.setupExportPanel();
       this.addCheckboxesToMessages();
@@ -26,40 +26,41 @@ class ClaudeExporter {
     });
   }
 
-  async waitForChatInterface() {
-    const selectors = ['.w-full.h-full.relative', '[role="main"]', '#__next'];
-    for (const selector of selectors) {
-      const container = await this.waitForElement(selector);
-      if (container) return container;
-    }
-    throw new Error('Chat container not found');
+  waitForChatContent() {
+    return new Promise((resolve) => {
+      const checkContent = () => {
+        const messages = document.querySelectorAll('.font-user-message, .font-claude-message, [data-message-author-role]');
+        if (messages.length > 0) {
+          resolve();
+          return;
+        }
+        setTimeout(checkContent, 100);
+      };
+      checkContent();
+    });
   }
 
-  waitForElement(selector, timeout = 10000) {
-    return new Promise((resolve) => {
-      const element = document.querySelector(selector);
-      if (element) {
-        resolve(element);
-        return;
+  setupMessageObserver() {
+    const observer = new MutationObserver((mutations) => {
+      const hasNewMessages = mutations.some(mutation => {
+        return Array.from(mutation.addedNodes).some(node => {
+          if (node.nodeType !== Node.ELEMENT_NODE) return false;
+          return node.classList?.contains('font-user-message') ||
+                 node.classList?.contains('font-claude-message') ||
+                 node.hasAttribute('data-message-author-role');
+        });
+      });
+
+      if (hasNewMessages) {
+        this.addCheckboxesToMessages();
       }
+    });
 
-      const observer = new MutationObserver((_, obs) => {
-        const element = document.querySelector(selector);
-        if (element) {
-          obs.disconnect();
-          resolve(element);
-        }
-      });
-
-      observer.observe(document.documentElement, {
-        childList: true,
-        subtree: true
-      });
-
-      setTimeout(() => {
-        observer.disconnect();
-        resolve(null);
-      }, timeout);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: false,
+      characterData: false
     });
   }
 
@@ -80,8 +81,7 @@ class ClaudeExporter {
     controlsDiv.appendChild(selectAllBtn);
     controlsDiv.appendChild(deselectAllBtn);
     
-    const container = document.querySelector('.w-full.h-full.relative') || document.body;
-    container.appendChild(controlsDiv);
+    document.body.appendChild(controlsDiv);
   }
 
   setupExportPanel() {
@@ -102,8 +102,7 @@ class ClaudeExporter {
       exportDiv.appendChild(button);
     });
 
-    const container = document.querySelector('.w-full.h-full.relative') || document.body;
-    container.appendChild(exportDiv);
+    document.body.appendChild(exportDiv);
   }
 
   selectAllMessages(select) {
@@ -141,35 +140,6 @@ class ClaudeExporter {
     } catch (error) {
       console.error('Failed to add checkbox:', error);
     }
-  }
-
-  setupMessageObserver() {
-    const chatContainer = document.querySelector('.w-full.h-full.relative') || 
-                         document.querySelector('[role="main"]');
-    
-    if (!chatContainer) return;
-
-    const observer = new MutationObserver((mutations) => {
-      const hasNewMessages = mutations.some(mutation => {
-        return Array.from(mutation.addedNodes).some(node => {
-          if (node.nodeType !== Node.ELEMENT_NODE) return false;
-          return node.classList?.contains('font-user-message') ||
-                 node.classList?.contains('font-claude-message') ||
-                 node.hasAttribute('data-message-author-role');
-        });
-      });
-
-      if (hasNewMessages) {
-        this.addCheckboxesToMessages();
-      }
-    });
-
-    observer.observe(chatContainer, {
-      childList: true,
-      subtree: true,
-      attributes: false,
-      characterData: false
-    });
   }
 
   getSelectedMessages() {
