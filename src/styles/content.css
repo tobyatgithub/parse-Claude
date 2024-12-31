@@ -1,32 +1,44 @@
-.claude-export-checkbox-wrapper {
-  all: initial !important;
-  position: absolute !important;
-  left: -30px !important;
-  top: 10px !important;
-  z-index: 10000 !important;
-  display: block !important;
-  width: 20px !important;
-  height: 20px !important;
-  pointer-events: auto !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  background: transparent !important;
+/* 最外层消息容器的样式 */
+.group.relative.pt-3\\.5,      /* Claude消息容器 */
+.group.relative.inline-flex {   /* 用户消息容器 */
+  position: relative !important;
+  margin-left: 45px !important;
 }
 
-.claude-export-checkbox {
+/* Checkbox 样式 */
+body .claude-export-checkbox,
+html .claude-export-checkbox,
+:root .claude-export-checkbox {
   all: initial !important;
+  position: absolute !important;
+  left: -35px !important;
+  top: 15px !important;  /* 统一的顶部距离 */
   appearance: auto !important;
   -webkit-appearance: checkbox !important;
   width: 20px !important;
   height: 20px !important;
   display: block !important;
-  position: relative !important;
   cursor: pointer !important;
-  pointer-events: auto !important;
+  z-index: 10000 !important;
   visibility: visible !important;
   opacity: 1 !important;
   margin: 0 !important;
   padding: 0 !important;
+  box-sizing: border-box !important;
+  background: white !important;
+}
+
+/* 确保所有消息容器都有正确的定位上下文 */
+.font-claude-message,
+.font-user-message {
+  position: relative !important;
+}
+
+body .text-message-content,
+body div[class*="whitespace-pre-wrap"],
+html .text-message-content,
+html div[class*="whitespace-pre-wrap"] {
+  position: static !important;
 }
 
 .claude-export-controls {
@@ -78,6 +90,16 @@
 .whitespace-pre-wrap,
 .flex.flex-col.items-start.gap-4 {
   position: relative !important;
-  margin-left: 30px !important;
+  margin-left: 45px !important;
   padding-left: 5px !important;
+}
+
+.font-claude-message,
+.font-user-message {
+  position: relative !important;
+}
+
+.text-message-content,
+div[class*="whitespace-pre-wrap"] {
+  position: static !important;
 } 
