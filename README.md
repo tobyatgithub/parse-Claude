@@ -45,6 +45,7 @@ A Chrome extension for easily exporting conversations from Claude.
 - Basic knowledge of JavaScript, HTML, and CSS | 基础的JavaScript、HTML和CSS知识
 
 ### Project Structure | 项目结构
+```
 parse-Claude/
 ├── manifest.json
 ├── src/
@@ -58,6 +59,7 @@ parse-Claude/
 ├── assets/
 │ └── icons/
 └── README.md
+```
 
 ## Contributing
 
