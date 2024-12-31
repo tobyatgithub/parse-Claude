@@ -1,47 +1,83 @@
+.claude-export-checkbox-wrapper {
+  all: initial !important;
+  position: absolute !important;
+  left: -30px !important;
+  top: 10px !important;
+  z-index: 10000 !important;
+  display: block !important;
+  width: 20px !important;
+  height: 20px !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: transparent !important;
+}
+
 .claude-export-checkbox {
-  position: absolute;
-  left: -30px;
-  top: 50%;
-  transform: translateY(-50%);
+  all: initial !important;
+  appearance: auto !important;
+  -webkit-appearance: checkbox !important;
+  width: 20px !important;
+  height: 20px !important;
+  display: block !important;
+  position: relative !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .claude-export-controls {
   position: fixed;
   bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
+  left: 20px;
+  z-index: 10000;
   display: flex;
-  gap: 10px;
+  gap: 8px;
+  background: white;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  pointer-events: auto !important;
 }
 
 .claude-export-float {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index: 1000;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 10000;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  background: white;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  pointer-events: auto !important;
 }
 
 .claude-export-button {
-  min-width: 150px;
-  text-align: center;
-  font-size: 14px;
   padding: 8px 16px;
-  border-radius: 4px;
   border: 1px solid #ddd;
+  border-radius: 4px;
   background: white;
   cursor: pointer;
-  transition: all 0.2s;
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: auto !important;
 }
 
 .claude-export-button:hover {
   background: #f5f5f5;
+}
+
+[data-message-author-role],
+.prose,
+.whitespace-pre-wrap,
+.flex.flex-col.items-start.gap-4 {
+  position: relative !important;
+  margin-left: 30px !important;
+  padding-left: 5px !important;
 } 

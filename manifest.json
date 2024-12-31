@@ -9,18 +9,23 @@
     "storage",
     "clipboardWrite"
   ],
-  "action": {
-    "default_icon": {
-      "16": "assets/icons/icon16.png",
-      "48": "assets/icons/icon48.png",
-      "128": "assets/icons/icon128.png"
-    }
+  "host_permissions": [
+    "https://claude.ai/*",
+    "https://*.claudeusercontent.com/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
   },
   "content_scripts": [
     {
-      "matches": ["https://*.anthropic.com/*"],
+      "matches": [
+        "https://claude.ai/*",
+        "https://*.claudeusercontent.com/*"
+      ],
       "css": ["src/styles/content.css"],
-      "js": ["src/content.js"]
+      "js": ["src/content.js"],
+      "run_at": "document_idle",
+      "all_frames": true
     }
   ],
   "icons": {
