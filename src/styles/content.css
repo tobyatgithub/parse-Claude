@@ -19,12 +19,22 @@ html .claude-export-checkbox,
   display: block !important;
   cursor: pointer !important;
   z-index: 10000 !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+  visibility: hidden !important; /* 默认隐藏 */
+  opacity: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box !important;
   background: white !important;
+}
+
+/* 选中状态或悬停时显示checkbox */
+body .claude-export-checkbox:checked,
+html .claude-export-checkbox:checked,
+:root .claude-export-checkbox:checked,
+.group.relative.pt-3\.5:hover .claude-export-checkbox,
+.group.relative.inline-flex:hover .claude-export-checkbox {
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* 确保所有消息容器都有正确的定位上下文 */
