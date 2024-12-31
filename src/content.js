@@ -147,10 +147,7 @@ class ClaudeExporter {
     const chatContainer = document.querySelector('.w-full.h-full.relative') || 
                          document.querySelector('[role="main"]');
     
-    if (!chatContainer) {
-      console.error('Chat container not found');
-      return;
-    }
+    if (!chatContainer) return;
 
     const observer = new MutationObserver((mutations) => {
       const hasNewMessages = mutations.some(mutation => {
@@ -181,27 +178,19 @@ class ClaudeExporter {
       .map(checkbox => {
         const role = checkbox.getAttribute('data-message-role');
         
-        let messageContainer;
-        if (role === 'assistant') {
-          messageContainer = checkbox.closest('.group.relative.pt-3\\.5');
-        } else {
-          messageContainer = checkbox.closest('.group.relative.inline-flex');
-        }
-
-        if (!messageContainer) {
-          console.error('Message container not found for checkbox:', checkbox);
-          return null;
-        }
+        const selector = role === 'assistant' 
+          ? '.group.relative.pt-3\\.5'
+          : '.group.relative.inline-flex';
+        
+        const messageContainer = checkbox.closest(selector);
+        if (!messageContainer) return null;
 
         const content = this.getAllTextContent(messageContainer);
         if (!content) return null;
 
-        return {
-          role,
-          content
-        };
+        return { role, content };
       })
-      .filter(msg => msg && msg.content);
+      .filter(Boolean);
   }
 
   determineMessageRole(element) {
@@ -280,8 +269,8 @@ class ClaudeExporter {
       await navigator.clipboard.writeText(text);
       alert('已复制到剪贴板 | Copied to clipboard');
     } catch (err) {
+      console.error('Failed to copy to clipboard:', err);
       alert('复制失败 | Copy failed');
-      console.error(err);
     }
   }
 
