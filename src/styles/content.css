@@ -25,16 +25,33 @@ html .claude-export-checkbox,
   padding: 0 !important;
   box-sizing: border-box !important;
   background: white !important;
+  transition: visibility 0.2s 0.5s, opacity 0.2s ease !important; /* 添加延迟过渡 */
 }
 
-/* 选中状态或悬停时显示checkbox */
+/* 创建一个扩展的悬停区域 */
+.font-claude-message::before,  /* claude消息容器 */
+.group.relative.inline-flex::before {   /* 用户消息容器 */
+  content: '';
+  position: absolute;
+  left: -45px;  /* 比checkbox更宽一些 */
+  top: 0;
+  width: 45px;  /* 覆盖checkbox区域 */
+  height: 100%;
+  background: transparent;
+  z-index: 9999;
+}
+
+
+/* 修改显示逻辑，包含扩展区域的悬停 */
 body .claude-export-checkbox:checked,
 html .claude-export-checkbox:checked,
 :root .claude-export-checkbox:checked,
 .group.relative.pt-3\.5:hover .claude-export-checkbox,
-.group.relative.inline-flex:hover .claude-export-checkbox {
+.group.relative.inline-flex:hover .claude-export-checkbox,
+.claude-export-checkbox:hover {  /* 添加checkbox自身的hover */
   visibility: visible !important;
   opacity: 1 !important;
+  transition-delay: 0s !important;  /* 显示时没有延迟 */
 }
 
 /* 确保所有消息容器都有正确的定位上下文 */
