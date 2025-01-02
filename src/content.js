@@ -191,48 +191,53 @@ class ClaudeExporter {
     if (!element) return '';
     let textParts = [];
     
-    const extractText = (node) => {
-      if (!node) return;
-
-      if (node.classList?.contains('claude-export-checkbox')) {
+    // 获取所有消息元素
+    const messages = element.querySelectorAll('.font-user-message, .font-claude-message');
+    
+    messages.forEach(message => {
+      // 跳过编辑框
+      if (message.getAttribute('contenteditable') === 'true') {
         return;
       }
 
-      if (node.nodeType === Node.TEXT_NODE) {
-        const text = node.textContent;
-        if (text && text.trim()) textParts.push(text);
-      } 
-      else if (node.nodeType === Node.ELEMENT_NODE) {
-        const ignoreElements = ['SELECT', 'OPTION', 'BUTTON', 'INPUT'];
-        if (ignoreElements.includes(node.tagName)) {
-          return;
-        }
-
-        if (node.tagName === 'PRE' || node.tagName === 'CODE') {
-          textParts.push('\n```\n' + node.textContent + '\n```\n');
-          return;
-        }
+      // 处理用户消息
+      if (message.classList.contains('font-user-message')) {        
+        // 获取消息内容
+        let content = message.textContent
+          // 移除所有可能的前缀格式
+          .replace(/\s*Edit\s*$/, '')
+          .trim();
         
-        if (node.tagName === 'LI') {
-          textParts.push('\n• ');
-        }
-        
-        node.childNodes.forEach(child => extractText(child));
+        textParts.push(content);
       }
-    };
+      // 处理 Claude 消息
+      else {
+        let content = message.textContent
+          .replace(/\s*(Copy|Retry)\s*$/, '')  // 移除末尾的 Copy/Retry
+          .trim();
 
-    try {
-      extractText(element);
-    } catch (e) {
-      console.error('Error extracting text:', e);
-    }
-    
+        // 格式化内容
+        content = content
+          // 确保冒号后有一个空格
+          .replace(/:\s*/g, ': ')
+          // 处理列表项
+          .replace(/(?:^|\n)([^•\n]+)(?=\n|$)/g, (match, line) => {
+            if (line.match(/^(Smart|Export|Quick|Modern|Smooth)/)) {
+              return `\n• ${line}`;
+            }
+            return match;
+          })
+          // 移除多余的换行
+          .replace(/\n{3,}/g, '\n\n')
+          .trim();
+
+        textParts.push(content);
+      }
+    });
+
     return textParts
-      .join('')
+      .join('\n\n')
       .replace(/\n{3,}/g, '\n\n')
-      .replace(/\s+\n/g, '\n')
-      .replace(/\n\s+/g, '\n')
-      .replace(/^\s+|\s+$/g, '')
       .trim();
   }
 
