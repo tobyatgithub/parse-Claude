@@ -6,7 +6,8 @@
   "permissions": [
     "activeTab",
     "clipboardWrite",
-    "downloads"
+    "downloads",    
+    "scripting"
   ],
   "icons": {
     "16": "assets/icons/icon16.png",
