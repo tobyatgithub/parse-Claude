@@ -65,24 +65,39 @@ class ClaudeExporter {
 
   setupControls() {
     const exportDiv = document.createElement('div');
-    exportDiv.className = 'claude-export-float';
+    exportDiv.className = 'claude-export-float collapsed';
+
+    const toggleButton = document.createElement('button');
+    toggleButton.className = 'claude-export-toggle';
+    toggleButton.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 5l7 7-7 7"/>
+      </svg>
+    `;
+    toggleButton.addEventListener('click', () => {
+      exportDiv.classList.toggle('collapsed');
+    });
+    exportDiv.appendChild(toggleButton);
 
     const selectButtons = [
       { text: 'Select All', handler: () => this.selectAllMessages(true) },
       { text: 'Deselect All', handler: () => this.selectAllMessages(false) }
     ];
 
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'claude-export-content';
+
     selectButtons.forEach(({ text, handler }) => {
       const button = document.createElement('button');
       button.textContent = text;
       button.className = 'claude-export-button';
       button.addEventListener('click', handler);
-      exportDiv.appendChild(button);
+      contentDiv.appendChild(button);
     });
 
     const divider = document.createElement('div');
     divider.className = 'claude-export-divider';
-    exportDiv.appendChild(divider);
+    contentDiv.appendChild(divider);
 
     const exportButtons = [
       { text: '复制到剪贴板 | Copy', handler: () => this.copyToClipboard() },
@@ -95,9 +110,10 @@ class ClaudeExporter {
       button.textContent = text;
       button.className = 'claude-export-button';
       button.addEventListener('click', handler);
-      exportDiv.appendChild(button);
+      contentDiv.appendChild(button);
     });
 
+    exportDiv.appendChild(contentDiv);
     document.body.appendChild(exportDiv);
   }
 

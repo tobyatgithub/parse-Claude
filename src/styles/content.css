@@ -55,29 +55,95 @@ html div[class*="whitespace-pre-wrap"] {
   bottom: 20px;
   right: 20px;
   z-index: 10000;
+}
+
+.claude-export-float.collapsed {
+  width: 48px;
+  height: 48px;
+}
+
+.claude-export-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background: #007AFF;
+  color: white;
+  border: none;
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(0, 120, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10001;
+}
+
+.claude-export-toggle:hover {
+  box-shadow: 0 4px 16px rgba(0, 120, 255, 0.3);
+}
+
+.claude-export-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.claude-export-float.collapsed .claude-export-toggle svg {
+  transform: rotate(180deg);
+}
+
+.claude-export-content {
+  position: fixed;
+  right: 68px;
+  bottom: 20px;
   background: white;
-  padding: 8px;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  pointer-events: auto !important;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transform: translateX(10px);
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 200px;
+  display: none;
+}
+
+.claude-export-float:not(.collapsed) .claude-export-content {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  display: block;
 }
 
 .claude-export-button {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: #f5f5f5;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  transition: all 0.2s ease;
+  margin: 4px 0;
+  color: #333;
   white-space: nowrap;
-  pointer-events: auto !important;
 }
 
 .claude-export-button:hover {
-  background: #f5f5f5;
+  background: #ebebeb;
+  transform: translateX(2px);
+}
+
+.claude-export-divider {
+  height: 1px;
+  background: #e5e5e5;
+  margin: 8px 0;
+  width: 100%;
 }
 
 [data-message-author-role],
@@ -96,12 +162,4 @@ html div[class*="whitespace-pre-wrap"] {
 .text-message-content,
 div[class*="whitespace-pre-wrap"] {
   position: static !important;
-}
-
-/* 添加分隔线样式 */
-.claude-export-divider {
-  height: 1px;
-  background-color: #ddd;
-  margin: 4px 0;
-  width: 100%;
 } 
