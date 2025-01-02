@@ -162,4 +162,25 @@ html div[class*="whitespace-pre-wrap"] {
 .text-message-content,
 div[class*="whitespace-pre-wrap"] {
   position: static !important;
+}
+
+/* 添加 Toast 样式 */
+.claude-toast {
+  position: fixed;
+  top: 20px;  /* 改为顶部 */
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  z-index: 10002;
+  opacity: 0;
+  transform: translateY(-10px);  /* 改为向上的动画 */
+  transition: all 0.3s ease;
+}
+
+.claude-toast.show {
+  opacity: 1;
+  transform: translateY(0);
 } 

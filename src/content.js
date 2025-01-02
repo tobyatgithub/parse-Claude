@@ -236,10 +236,29 @@ class ClaudeExporter {
       .trim();
   }
 
+  showToast(message, duration = 2000) {
+    const existingToast = document.querySelector('.claude-toast');
+    if (existingToast) {
+      existingToast.remove();
+    }
+
+    const toast = document.createElement('div');
+    toast.className = 'claude-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, duration);
+  }
+
   async copyToClipboard() {
     const messages = this.getSelectedMessages();
     if (messages.length === 0) {
-      alert('请先选择要导出的消息 | Please select messages to export');
+      this.showToast('请先选择要导出的消息 | Please select messages');
       return;
     }
 
@@ -249,17 +268,17 @@ class ClaudeExporter {
 
     try {
       await navigator.clipboard.writeText(text);
-      alert('已复制到剪贴板 | Copied to clipboard');
+      this.showToast('已复制到剪贴板 | Copied to clipboard');
     } catch (err) {
       console.error('Failed to copy to clipboard:', err);
-      alert('复制失败 | Copy failed');
+      this.showToast('复制失败 | Copy failed');
     }
   }
 
   exportAsTxt() {
     const messages = this.getSelectedMessages();
     if (messages.length === 0) {
-      alert('请先选择要导出的消息 | Please select messages to export');
+      this.showToast('请先选择要导出的消息 | Please select messages');
       return;
     }
 
@@ -267,13 +286,14 @@ class ClaudeExporter {
       .map(msg => `${msg.role === 'assistant' ? 'Claude' : 'Human'}:\n${msg.content}`)
       .join('\n\n---\n\n');
 
+    this.showToast('正在导出TXT | Exporting TXT...');
     this.downloadFile(text, 'claude-conversation.txt', 'text/plain');
   }
 
   exportAsMarkdown() {
     const messages = this.getSelectedMessages();
     if (messages.length === 0) {
-      alert('请先选择要导出的消息 | Please select messages to export');
+      this.showToast('请先选择要导出的消息 | Please select messages');
       return;
     }
 
@@ -281,6 +301,7 @@ class ClaudeExporter {
       .map(msg => `### ${msg.role === 'assistant' ? 'Claude' : 'Human'}\n\n${msg.content}`)
       .join('\n\n---\n\n');
 
+    this.showToast('正在导出MD | Exporting MD...');
     this.downloadFile(text, 'claude-conversation.md', 'text/markdown');
   }
 
