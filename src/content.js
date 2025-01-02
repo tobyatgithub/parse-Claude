@@ -1,30 +1,41 @@
 class ClaudeExporter {
+  static instance = null;
+
   constructor() {
+    if (ClaudeExporter.instance) {
+      return ClaudeExporter.instance;
+    }
+    
+    ClaudeExporter.instance = this;
+    this.observer = null;
     this.init();
     this.setupUrlChangeListener();
   }
 
   setupUrlChangeListener() {
     let lastUrl = location.href;
-    const observer = new MutationObserver(() => {
+    
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+
+    this.observer = new MutationObserver(() => {
       if (location.href !== lastUrl) {
         lastUrl = location.href;
         console.log('URL changed, reinitializing...');
-        setTimeout(() => this.init(), 500);
+        
+        this.cleanup();
+        
+        if (location.href.includes('/chat/')) {
+          setTimeout(() => this.init(), 500);
+        }
       }
     });
 
-    observer.observe(document, {
+    this.observer.observe(document, {
       subtree: true,
       childList: true
     });
-  }
-
-  init() {
-    this.cleanup();
-    this.initControlPanel();
-    this.addCheckboxesToMessages();
-    this.observeNewMessages();
   }
 
   cleanup() {
@@ -36,6 +47,13 @@ class ClaudeExporter {
     document.querySelectorAll('.claude-export-checkbox').forEach(checkbox => {
       checkbox.remove();
     });
+  }
+
+  init() {
+    this.cleanup();
+    this.initControlPanel();
+    this.addCheckboxesToMessages();
+    this.observeNewMessages();
   }
 
   async init() {
@@ -226,45 +244,34 @@ class ClaudeExporter {
     if (!element) return '';
     let textParts = [];
     
-    // 获取所有消息元素
     const messages = element.querySelectorAll('.font-user-message, .font-claude-message');
     
     messages.forEach(message => {
-      // 跳过编辑框
       if (message.getAttribute('contenteditable') === 'true') {
         return;
       }
 
-      // 处理用户消息
       if (message.classList.contains('font-user-message')) {        
-        // 获取消息内容
         let content = message.textContent
-          // 移除所有可能的前缀格式
           .replace(/\s*Edit\s*$/, '')
           .trim();
         
         textParts.push(content);
       }
-      // 处理 Claude 消息
       else {
         let content = message.textContent
-          .replace(/\s*(Copy|Retry)\s*$/, '')  // 移除末尾的 Copy/Retry
+          .replace(/\s*(Copy|Retry)\s*$/, '')
           .trim();
 
-        // 格式化内容
         content = content
-          // 确保冒号后有一个空格
           .replace(/:\s*/g, ': ')
-          // 在 "Click to open image" 后添加换行
           .replace(/Click to open image/g, 'Click to open image\n')
-          // 处理列表项
           .replace(/(?:^|\n)([^•\n]+)(?=\n|$)/g, (match, line) => {
             if (line.match(/^(Smart|Export|Quick|Modern|Smooth)/)) {
               return `\n• ${line}`;
             }
             return match;
           })
-          // 移除多余的换行
           .replace(/\n{3,}/g, '\n\n')
           .trim();
 
@@ -367,30 +374,20 @@ if (document.readyState === 'loading') {
 }
 
 document.addEventListener('click', function(event) {
-    // 获取控制面板元素 - 修正类名
     const controlPanel = document.querySelector('.claude-export-float');
     
-    // 如果面板不存在或者已经是收起状态，直接返回
     if (!controlPanel || controlPanel.classList.contains('collapsed')) {
         return;
     }
 
-    // 检查点击的元素是否在以下情况之一：
-    // 1. 点击的是控制面板本身
-    // 2. 点击的是复选框
-    // 3. 点击的是对话消息
-    // 4. 点击的是控制面板内的按钮
     const isControlPanel = event.target.closest('.claude-export-float');
     const isCheckbox = event.target.closest('.claude-export-checkbox');
     const isMessage = event.target.closest('.group.relative');
     const isControlButton = event.target.closest('.claude-export-button');
 
-    // 如果点击的是上述元素之一，不收起面板
     if (isControlPanel || isCheckbox || isMessage || isControlButton) {
         return;
     }
 
-    // 其他情况，收起面板
-    // console.log('收起面板');
     controlPanel.classList.add('collapsed');
 }); 
