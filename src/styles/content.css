@@ -50,20 +50,6 @@ html div[class*="whitespace-pre-wrap"] {
   position: static !important;
 }
 
-.claude-export-controls {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 10000;
-  display: flex;
-  gap: 8px;
-  background: white;
-  padding: 8px;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  pointer-events: auto !important;
-}
-
 .claude-export-float {
   position: fixed;
   bottom: 20px;
@@ -110,4 +96,12 @@ html div[class*="whitespace-pre-wrap"] {
 .text-message-content,
 div[class*="whitespace-pre-wrap"] {
   position: static !important;
+}
+
+/* 添加分隔线样式 */
+.claude-export-divider {
+  height: 1px;
+  background-color: #ddd;
+  margin: 4px 0;
+  width: 100%;
 } 

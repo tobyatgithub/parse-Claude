@@ -8,7 +8,6 @@ class ClaudeExporter {
       await this.waitForPageLoad();
       await this.waitForChatContent();
       this.setupControls();
-      this.setupExportPanel();
       this.addCheckboxesToMessages();
       this.setupMessageObserver();
     } catch (error) {
@@ -65,36 +64,33 @@ class ClaudeExporter {
   }
 
   setupControls() {
-    const controlsDiv = document.createElement('div');
-    controlsDiv.className = 'claude-export-controls';
-    
-    const selectAllBtn = document.createElement('button');
-    selectAllBtn.textContent = 'Select All';
-    selectAllBtn.className = 'claude-export-button';
-    selectAllBtn.addEventListener('click', () => this.selectAllMessages(true));
-
-    const deselectAllBtn = document.createElement('button');
-    deselectAllBtn.textContent = 'Deselect All';
-    deselectAllBtn.className = 'claude-export-button';
-    deselectAllBtn.addEventListener('click', () => this.selectAllMessages(false));
-
-    controlsDiv.appendChild(selectAllBtn);
-    controlsDiv.appendChild(deselectAllBtn);
-    
-    document.body.appendChild(controlsDiv);
-  }
-
-  setupExportPanel() {
     const exportDiv = document.createElement('div');
     exportDiv.className = 'claude-export-float';
 
-    const buttons = [
+    const selectButtons = [
+      { text: 'Select All', handler: () => this.selectAllMessages(true) },
+      { text: 'Deselect All', handler: () => this.selectAllMessages(false) }
+    ];
+
+    selectButtons.forEach(({ text, handler }) => {
+      const button = document.createElement('button');
+      button.textContent = text;
+      button.className = 'claude-export-button';
+      button.addEventListener('click', handler);
+      exportDiv.appendChild(button);
+    });
+
+    const divider = document.createElement('div');
+    divider.className = 'claude-export-divider';
+    exportDiv.appendChild(divider);
+
+    const exportButtons = [
       { text: '复制到剪贴板 | Copy', handler: () => this.copyToClipboard() },
       { text: '导出为TXT | Export TXT', handler: () => this.exportAsTxt() },
       { text: '导出为MD | Export MD', handler: () => this.exportAsMarkdown() }
     ];
 
-    buttons.forEach(({ text, handler }) => {
+    exportButtons.forEach(({ text, handler }) => {
       const button = document.createElement('button');
       button.textContent = text;
       button.className = 'claude-export-button';
