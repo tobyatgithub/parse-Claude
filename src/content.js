@@ -322,4 +322,33 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => new ClaudeExporter());
 } else {
   new ClaudeExporter();
-} 
+}
+
+document.addEventListener('click', function(event) {
+    // 获取控制面板元素 - 修正类名
+    const controlPanel = document.querySelector('.claude-export-float');
+    
+    // 如果面板不存在或者已经是收起状态，直接返回
+    if (!controlPanel || controlPanel.classList.contains('collapsed')) {
+        return;
+    }
+
+    // 检查点击的元素是否在以下情况之一：
+    // 1. 点击的是控制面板本身
+    // 2. 点击的是复选框
+    // 3. 点击的是对话消息
+    // 4. 点击的是控制面板内的按钮
+    const isControlPanel = event.target.closest('.claude-export-float');
+    const isCheckbox = event.target.closest('.claude-export-checkbox');
+    const isMessage = event.target.closest('.group.relative');
+    const isControlButton = event.target.closest('.claude-export-button');
+
+    // 如果点击的是上述元素之一，不收起面板
+    if (isControlPanel || isCheckbox || isMessage || isControlButton) {
+        return;
+    }
+
+    // 其他情况，收起面板
+    // console.log('收起面板');
+    controlPanel.classList.add('collapsed');
+}); 
