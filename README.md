@@ -8,6 +8,7 @@ A Chrome extension for easily exporting conversations from Claude.
 
 ### Current Features | 当前功能
 - **Conversation Selection | 对话选择**
+  - Smart checkbox positioning with hover effect | 智能的复选框定位与悬停效果
   - Perfectly aligned with both user and Claude messages | 与用户和Claude消息完美对齐
   - Select All/Deselect All buttons | 全选/取消全选按钮
 
@@ -16,31 +17,41 @@ A Chrome extension for easily exporting conversations from Claude.
   - Download as TXT | 下载为TXT文件
   - Download as Markdown | 下载为Markdown文件
 
+- **Modern UI Design | 现代化界面设计**
+  - Collapsible floating control panel | 可折叠的悬浮控制面板
+  - Smooth transitions and animations | 平滑的过渡和动画效果
+  - Non-intrusive toast notifications | 非侵入式的 Toast 通知
+
 ### Planned Features | 计划功能
 
-#### UI Improvements | 界面改进
-1. **Unified Control Panel | 统一控制面板**
-   - Collapsible floating button that expands to show all options
-   - 可折叠的悬浮按钮，展开后显示所有选项
-   - Benefits | 优势:
-     - Cleaner interface | 更简洁的界面
-     - More screen space for chat | 为聊天留出更多空间
-     - Better user experience | 更好的用户体验
-   - Challenges | 挑战:
-     - Need to ensure good positioning | 需要确保良好的定位
-     - Must maintain accessibility | 必须保持可访问性
-     - Consider mobile responsiveness | 考虑移动端响应性
+- **Enhanced Code Support | 增强的代码支持**
+  - Preserve code formatting | 保持代码格式
+  - Syntax highlighting | 语法高亮
+  - Handle multi-line code blocks | 处理多行代码块
 
-2. **Enhanced Feedback System | 增强的反馈系统**
-   - Toast notifications for user actions | 用户操作的 Toast 通知
-   - Benefits | 优势:
-     - No interrupting alerts | 无打断性提醒
-     - Better user feedback | 更好的用户反馈
-     - Modern UI feel | 现代化的界面感觉
-   - Implementation Considerations | 实现考虑:
-     - Position and timing | 位置和时间
-     - Animation smoothness | 动画流畅度
-     - Message clarity | 消息清晰度
+- **Image Support | 图片支持**
+  - Handle conversation images | 处理对话中的图片
+  - Image export options | 图片导出选项
+  - Optional image compression | 可选的图片压缩
+
+- **Export Templates | 导出模板**
+  - Customizable export formats | 可自定义的导出格式
+  - Multiple template styles | 多种模板样式
+  - User preference saving | 用户偏好保存
+
+- **Keyboard Shortcuts | 快捷键支持**
+  - Common operation shortcuts | 常用操作快捷键
+  - Customizable shortcuts | 可自定义的快捷键
+  - Shortcut hints | 快捷键提示
+
+## Recent Updates | 最近更新
+
+### UI/UX Improvements | 界面改进 (Latest | 最新)
+- Redesigned the control panel to be collapsible | 重新设计了可折叠的控制面板
+- Added smooth transitions for better user experience | 添加平滑过渡效果提升用户体验
+- Improved checkbox behavior with smart hover detection | 改进了复选框的悬停检测行为
+- Replaced alert messages with elegant toast notifications | 用优雅的 Toast 通知替代了弹窗提醒
+- Fixed checkbox positioning issues | 修复了复选框定位问题
 
 ## Installation | 安装方法
 
