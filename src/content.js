@@ -255,6 +255,8 @@ class ClaudeExporter {
         content = content
           // 确保冒号后有一个空格
           .replace(/:\s*/g, ': ')
+          // 在 "Click to open image" 后添加换行
+          .replace(/Click to open image/g, 'Click to open image\n')
           // 处理列表项
           .replace(/(?:^|\n)([^•\n]+)(?=\n|$)/g, (match, line) => {
             if (line.match(/^(Smart|Export|Quick|Modern|Smooth)/)) {
