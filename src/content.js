@@ -1,6 +1,41 @@
 class ClaudeExporter {
   constructor() {
     this.init();
+    this.setupUrlChangeListener();
+  }
+
+  setupUrlChangeListener() {
+    let lastUrl = location.href;
+    const observer = new MutationObserver(() => {
+      if (location.href !== lastUrl) {
+        lastUrl = location.href;
+        console.log('URL changed, reinitializing...');
+        setTimeout(() => this.init(), 500);
+      }
+    });
+
+    observer.observe(document, {
+      subtree: true,
+      childList: true
+    });
+  }
+
+  init() {
+    this.cleanup();
+    this.initControlPanel();
+    this.addCheckboxesToMessages();
+    this.observeNewMessages();
+  }
+
+  cleanup() {
+    const oldPanel = document.querySelector('.claude-export-float');
+    if (oldPanel) {
+      oldPanel.remove();
+    }
+
+    document.querySelectorAll('.claude-export-checkbox').forEach(checkbox => {
+      checkbox.remove();
+    });
   }
 
   async init() {
